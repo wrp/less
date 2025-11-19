@@ -24,6 +24,7 @@ extern int pr_type;
 extern lbool new_file;
 extern int linenums;
 extern int hshift;
+extern int sc_width;
 extern int sc_height;
 extern int jump_sline;
 extern int less_is_more;
@@ -45,9 +46,9 @@ extern constant char *editproto;
 static constant char s_proto[] =
   "?n?f%f .?m(%T %i of %m) ..?e(END) ?x- Next\\: %x..%t";
 static constant char m_proto[] =
-  "?n?f%f .?m(%T %i of %m) ..?e(END) ?x- Next\\: %x.:?pB%pB\\%:byte %bB?s/%s...%t";
+  "?n?f%f .?m(%T %i of %m) ..?e(END) ?x- Next\\: %x.:?pB%pB\\%:byte %bB?s/%s. ?ccolumns %c-%C.:..%t";
 static constant char M_proto[] =
-  "?f%f .?n?m(%T %i of %m) ..?ltlines %lt-%lb?L/%L. :byte %bB?s/%s. .?e(END) ?x- Next\\: %x.:?pB%pB\\%..%t";
+  "?f%f .?n?m(%T %i of %m) ..?ltlines %lt-%lb?L/%L. :byte %bB?s/%s. .?ccolumns %c-%C. .?e(END) ?x- Next\\: %x.:?pB%pB\\%..%t";
 static constant char e_proto[] =
   "?f%f .?m(%T %i of %m) .?ltlines %lt-%lb?L/%L. .byte %bB?s/%s. ?e(END) :?pB%pB\\%..%t";
 static constant char h_proto[] =
@@ -55,7 +56,7 @@ static constant char h_proto[] =
 static constant char w_proto[] =
   "Waiting for data";
 static constant char more_proto[] =
-  "--More--(?eEND ?x- Next\\: %x.:?pB%pB\\%:byte %bB?s/%s...%t)";
+  "--More--(?eEND ?x- Next\\: %x.:?pB%pB\\%:byte %bB?s/%s. ?ccolumns %c-%C.:..%t)";
 
 public char *prproto[3];
 public char constant *eqproto = e_proto;
@@ -276,6 +277,9 @@ static void protochar(char c, int where)
 		break;
 	case 'c':
 		ap_int(hshift);
+		break;
+	case 'C': /* Rightmost visible column */
+		ap_int(hshift + sc_width);
 		break;
 	case 'd': /* Current page number */
 		linenum = currline(where);
